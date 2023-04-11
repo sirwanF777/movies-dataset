@@ -64,7 +64,7 @@ class LinkCrawler(CrawlBase):
             i.join()
 
         if store:
-            self.store(self.__links_movie, 'data')
+            self.store(self.__links_movie, 'movies_link')
 
         print(f"find_links executed successfully -> url: {self.url}.")
 
@@ -99,21 +99,41 @@ class DataCrawler(CrawlBase):
             print(f"name: {my_data.get('name')}")
             self.store(
                 datas=my_data,
-                filename=my_data.get('name', 'sample').replace(' ', '_')
+                # filename=my_data.get('name', 'sample').replace(' ', '_')
             )
 
     def start(self, store=False):
         self.store_bool = store
-        pool = Pool(4)
-        with pool:
-            pool.map(self.my_multi_processing, self.__links)
+        # for link in self.__links:
+        #     response = requests.get(link)
+        #     my_data = self.parse.parse(response.text)
+        #     if self.store_bool:
+        #         print(f"name: {my_data.get('name')}")
+        #         self.store(
+        #             datas=my_data,
+        #             # filename=my_data.get('name', 'sample').replace(' ', '_')
+        #         )
+
+        # pool = Pool(4)
+        # with pool:
+        #     pool.map(self.my_multi_processing, self.__links)
+
+        threads = []
+        for link in self.__links:
+            tr = Thread(target=self.my_multi_processing, args=(link, ))
+            threads.append(tr)
+            tr.start()
+
+        for thread in threads:
+            thread.join()
+
         return f"extract_page executed successfully."
 
-    def store(self, datas, filename):
-        self.storage.store(datas, f"adv/{filename.replace('/','')}")
+    def store(self, datas, *args):
+        self.storage.store(datas, 'movies_information')
 
     @staticmethod
     def __load_links():
-        with open("fixtures/data.json", "r") as f:
+        with open("fixtures/movies_link.json", "r") as f:
             links = json.loads(f.read())
         return links

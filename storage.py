@@ -1,5 +1,6 @@
 import json
 from abc import ABC, abstractmethod
+from mongo import MongoDatabase
 
 
 class StorageAbstract(ABC):
@@ -9,8 +10,16 @@ class StorageAbstract(ABC):
 
 
 class MongoStore(StorageAbstract):
-    def store(self, data, filename, *args):
-        return NotImplementedError
+    def __init__(self):
+        self.mongo = MongoDatabase()
+
+    def store(self, datas, collection, *args):
+        collection = getattr(self.mongo.database, collection)
+        if isinstance(datas, list) and len(datas) > 1:
+            # for data in datas:
+            collection.insert_mony(datas)
+        else:
+            collection.insert_one(datas)
 
 
 class FileStore(StorageAbstract):

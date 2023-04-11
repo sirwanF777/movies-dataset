@@ -3,4 +3,4 @@ OBJECT_CLASS = {
     "serial": "%d8%af%d8%a7%d9%86%d9%84%d9%88%d8%af-%d8%b3%d8%b1%db%8c%d8%a7%d9%84",
 }
 
-STORAGE = 'file' # choices: ['mongo', 'file']
+STORAGE = 'mongo'  # choices: ['mongo', 'file']
