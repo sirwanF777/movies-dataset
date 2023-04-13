@@ -32,6 +32,14 @@ def start_find_links():
     for genre in OBJECT_CLASS.values():
         links.append([url.format(genre), number_pages])
 
+    # threads = []
+    # for link in links:
+    #     tr = Thread(target=my_pool, args=(link, ))
+    #     threads.append(tr)
+    #     tr.start()
+    # for tr in threads:
+    #     tr.join()
+
     pool = Pool(4)
     with pool:
         pool.map(my_pool, links)

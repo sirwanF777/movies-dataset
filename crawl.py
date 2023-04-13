@@ -1,5 +1,7 @@
 import json
+import pprint
 import requests
+from pymongo import MongoClient
 from config import STORAGE
 from storage import FileStore, MongoStore
 from multiprocessing import Pool
@@ -138,6 +140,16 @@ class DataCrawler(CrawlBase):
 
     @staticmethod
     def __load_links():
-        with open("fixtures/movies_link.json", "r") as f:
-            links = json.loads(f.read())
+        links = []
+
+        if STORAGE == "mongo":
+            client = MongoClient("localhost", 27017)
+            db = client["crawler"]
+            collection = db["movies_link"]
+            for link in collection.find():
+                links.append(link["link"])
+        elif STORAGE == 'file':
+            with open("fixtures/movies_link.json", "r") as f:
+                links = json.loads(f.read())
+
         return links

@@ -16,8 +16,8 @@ class MongoStore(StorageAbstract):
     def store(self, datas, collection, *args):
         collection = getattr(self.mongo.database, collection)
         if isinstance(datas, list) and len(datas) > 1:
-            # for data in datas:
-            collection.insert_mony(datas)
+            for link in datas:
+                collection.insert_one({"link": link})
         else:
             collection.insert_one(datas)
 
