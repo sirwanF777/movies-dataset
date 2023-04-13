@@ -33,7 +33,9 @@ class CrawlBase(ABC):
             response = requests.get(link)
         except requests.HTTPError:
             return None
-        return response
+        if response.status_code == 200:
+            return response
+        return None
 
 
 class LinkCrawler(CrawlBase):
@@ -94,25 +96,27 @@ class DataCrawler(CrawlBase):
 
     def my_multi_processing(self, link):
         response = self.get(link)
-        my_data = self.parse.parse(response.text)
-        if self.store_bool:
-            print(f"name: {my_data.get('name')}")
-            self.store(
-                datas=my_data,
-                # filename=my_data.get('name', 'sample').replace(' ', '_')
-            )
+        if response is not None:
+            my_data = self.parse.parse(response.text)
+            if self.store_bool:
+                print(f"name: {my_data.get('name')}")
+                self.store(
+                    datas=my_data,
+                )
 
     def start(self, store=False):
         self.store_bool = store
+
         # for link in self.__links:
-        #     response = requests.get(link)
-        #     my_data = self.parse.parse(response.text)
-        #     if self.store_bool:
-        #         print(f"name: {my_data.get('name')}")
-        #         self.store(
-        #             datas=my_data,
-        #             # filename=my_data.get('name', 'sample').replace(' ', '_')
-        #         )
+        #     response = self.get(link)
+        #     print(response)
+        #     if response is not None:
+        #         my_data = self.parse.parse(response.text)
+        #         if self.store_bool:
+        #             print(f"name: {my_data.get('name')}")
+        #             self.store(
+        #                 datas=my_data,
+        #             )
 
         # pool = Pool(4)
         # with pool:

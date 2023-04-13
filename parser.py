@@ -9,19 +9,25 @@ class AdvertisementPageParser:
 
     @property
     def download_links(self):
-        urls = self.soup.select_one(
-            "#page_content > div > div > div.row.mt-3 > div.col-lg.pl-lg-0 >"
-            " article > div.movie > div.m-content > div.m_content"
-        ).find_all('a')
+        urls = None
+        try:
+            urls = self.soup.select_one(
+                "#page_content > div > div > div.row.mt-3 > div.col-lg.pl-lg-0 >"
+                " article > div.movie > div.m-content > div.m_content"
+            ).find_all('a')
+        except:
+            pass
 
-        links = []
-        for link in urls:
-            text = "".join([i for i in link.text if i in string.printable])
-            links.append([text.strip(' '), link.get('href')])
-        if links:
-            if not links[-1][0]:
-                links[-1][0] = "subtitle"
-            return links
+        if urls:
+            links = []
+            for link in urls:
+                text = "".join([i for i in link.text if i in string.printable])
+                links.append([text.strip(' '), link.get('href')])
+            if links:
+                if not links[-1][0]:
+                    links[-1][0] = "subtitle"
+                return links
+        return None
 
     @property
     def description(self):
@@ -48,9 +54,11 @@ class AdvertisementPageParser:
             "#page_content > div > div > div.row.mt-3 > div.col-lg.pl-lg-0 > "
             "article > div.movie > div.m-title > h1 > a"
         )
-        english_name = ''.join([i for i in name.text if i in string.printable])
-        if english_name:
+
+        if name:
+            english_name = ''.join([i for i in name.text if i in string.printable])
             return english_name.strip(' ')
+        return 'sample'
 
     @property
     def site(self):
