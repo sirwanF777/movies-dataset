@@ -50,5 +50,5 @@ if __name__ == "__main__":
     if switch == "find_links":
         start_find_links()
     elif switch == "extract_page":
-        data = DataCrawler()
+        data = DataCrawler(search_collection="movies_url")
         data.start(store=True)

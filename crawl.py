@@ -3,6 +3,7 @@ import pprint
 import requests
 from pymongo import MongoClient
 from config import STORAGE
+from mongo import MongoDatabase
 from storage import FileStore, MongoStore
 from multiprocessing import Pool
 from threading import Thread
@@ -68,7 +69,7 @@ class LinkCrawler(CrawlBase):
             i.join()
 
         if store:
-            self.store(self.__links_movie, 'movies_link')
+            self.store(self.__links_movie, 'movies_url')
 
         print(f"find_links executed successfully -> url: {self.url}.")
 
@@ -82,29 +83,27 @@ class LinkCrawler(CrawlBase):
             'div', attrs={'class': 'col mb-3 mb-sm-0 col-sm-auto m-link px-0'}
         )
 
-        links_move = list()
-        for article in articles:
-            links_move.append(article.find('a').get('href'))
+        links_move = [{'link': article.find('a').get('href')} for article in articles]
+
+        # links_move = list()
+        # for article in articles:
+        #     links_move.append(["link", article.find('a').get('href')])
 
         return links_move
 
 
 class DataCrawler(CrawlBase):
-    def __init__(self):
-        self.__links = self.__load_links()
+    def __init__(self, search_collection="movies_url", store=False):
+        self.__links = self.__load_links(search_collection)
         self.parse = AdvertisementPageParser()
-        self.store_bool = False
+        self.store_bool = store
+        self.datas = list()
         super().__init__()
 
     def my_multi_processing(self, link):
         response = self.get(link)
         if response is not None:
-            my_data = self.parse.parse(response.text)
-            if self.store_bool:
-                print(f"name: {my_data.get('name')}")
-                self.store(
-                    datas=my_data,
-                )
+            self.datas.append(self.parse.parse(response.text))
 
     def start(self, store=False):
         self.store_bool = store
@@ -133,19 +132,20 @@ class DataCrawler(CrawlBase):
         for thread in threads:
             thread.join()
 
-        return f"extract_page executed successfully."
+        if self.store_bool:
+            self.store(datas=self.datas)
+        print(f"extract_page executed successfully.")
 
     def store(self, datas, *args):
         self.storage.store(datas, 'movies_information')
 
     @staticmethod
-    def __load_links():
+    def __load_links(search_collection="movies_url"):
         links = []
 
         if STORAGE == "mongo":
-            client = MongoClient("localhost", 27017)
-            db = client["crawler"]
-            collection = db["movies_link"]
+            mongodb = MongoDatabase()
+            collection = getattr(mongodb.database, search_collection)
             for link in collection.find():
                 links.append(link["link"])
         elif STORAGE == 'file':
