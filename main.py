@@ -1,6 +1,9 @@
 import sys
+import urllib.request
 from multiprocessing import Pool
 from threading import Thread
+
+import requests
 
 from config import OBJECT_CLASS
 from crawl import LinkCrawler, DataCrawler
@@ -45,10 +48,24 @@ def start_find_links():
         pool.map(my_pool, links)
 
 
+def check_internet_connection():
+    try:
+        response = requests.get("https://www.f2m.top/")
+        return True
+    except requests.exceptions.ConnectionError:
+        return False
+
+
 if __name__ == "__main__":
     switch = sys.argv[1]
     if switch == "find_links":
-        start_find_links()
+        if check_internet_connection():
+            start_find_links()
+        else:
+            print("Internet is not connected.")
     elif switch == "extract_page":
-        data = DataCrawler(search_collection="movies_url")
-        data.start(store=True)
+        if check_internet_connection():
+            data = DataCrawler(search_collection="movies_url")
+            data.start(store=True)
+        else:
+            print("Internet is not connected.")

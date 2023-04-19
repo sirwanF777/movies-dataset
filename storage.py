@@ -20,6 +20,8 @@ class MongoStore(StorageAbstract):
         else:
             collection.insert_one(datas)
 
+        return f"extract_page executed successfully."
+
 
 class FileStore(StorageAbstract):
     def store(self, datas, filename, *args):

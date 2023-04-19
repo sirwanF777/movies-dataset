@@ -22,10 +22,10 @@ class AdvertisementPageParser:
             links = []
             for link in urls:
                 text = "".join([i for i in link.text if i in string.printable])
-                links.append([text.strip(' '), link.get('href')])
+                link = link.get('href')
+                if not link.startswith("https://subscene.com/subtitles/"):
+                    links.append(link)
             if links:
-                if not links[-1][0]:
-                    links[-1][0] = "subtitle"
                 return links
         return None
 
@@ -132,9 +132,10 @@ class AdvertisementPageParser:
         if d:
             return d.text
 
-    def parse(self, html_data):
+    def parse(self, html_data, link):
         self.soup = BeautifulSoup(html_data, "html.parser")
         data_dict = {
+            "_id": link[1], "movie_information_link": link[0],
             "name": self.page_title, 'img_links': self.image_link,
             "description": self.description, 'download_links': self.download_links,
             "site": self.site, "genres": self.genres, 'IMDB': self.movie_score_IMDB,
