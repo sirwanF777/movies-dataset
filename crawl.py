@@ -43,10 +43,10 @@ class CrawlBase(ABC):
 
 class LinkCrawler(CrawlBase):
     def __init__(self, url, number_page=1):
+        super().__init__()
+        self.__links_movie = list()
         self.url = url
         self.number_page = number_page
-        self.__links_movie = list()
-        super().__init__()
 
     def my_thread(self, link):
         response = self.get(link)
@@ -92,11 +92,11 @@ class LinkCrawler(CrawlBase):
 
 class DataCrawler(CrawlBase):
     def __init__(self, search_collection="movies_url", store=False):
+        super().__init__()
         self.__links = self.__load_links(search_collection)
         self.parse = AdvertisementPageParser()
         self.store_bool = store
         self.datas = list()
-        super().__init__()
 
     def my_multi_processing(self, link):
         response = self.get(link[0])
@@ -138,7 +138,22 @@ class DataCrawler(CrawlBase):
             print("There are no links to search")
 
     def store(self, datas, *args):
-        return self.storage.store(datas, 'movies_information')
+        if STORAGE == "mongo":
+            return self.storage.store(datas, 'movies_information')
+        elif STORAGE == "file":
+            threads = []
+            for data in datas:
+                tr = Thread(
+                    target=self.storage.store,
+                    args=(data, data["name"].replace("/", ''))
+                )
+                threads.append(tr)
+                tr.start()
+
+            for tr in threads:
+                tr.join()
+
+            return "extract_page executed successfully."
 
     @staticmethod
     def __load_links(search_collection="movies_url"):
@@ -153,8 +168,16 @@ class DataCrawler(CrawlBase):
                                           {"$set": {"flag": True}})
                     links.append((link["link"], link["_id"]))
         elif STORAGE == 'file':
-            with open("fixtures/movies_link.json", "r") as f:
+            update_links = []
+            with open(f"fixtures/{search_collection}.json", "r") as f:
                 links = json.loads(f.read())
+                for link in links:
+                    if not link["flag"]:
+                        link['flag'] = True
+                        update_links.append((link["link"], 1))
+            with open(f"fixtures/{search_collection}.json", "w") as f:
+                f.write(json.dumps(links))
+            links = update_links
         if links:
             return links
         return None
