@@ -1,8 +1,9 @@
 import json
 import pprint
 import requests
+from numpy.distutils.command.config import config
 from pymongo import MongoClient
-from config import STORAGE
+from config import STORAGE, NAME_FILE_LINKS_MOVIES, NAME_FILE_INFORMATION_MOVIES
 from mongo import MongoDatabase
 from storage import FileStore, MongoStore
 from multiprocessing import Pool
@@ -48,10 +49,6 @@ class LinkCrawler(CrawlBase):
         self.url = url
         self.number_page = number_page
 
-    def my_thread(self, link):
-        response = self.get(link)
-        self.__links_movie.extend(self.find_links(response.text))
-
     def start(self, store=False):
         start_page = 1
         urls = list()
@@ -69,12 +66,13 @@ class LinkCrawler(CrawlBase):
             i.join()
 
         if store:
-            self.store(self.__links_movie, 'movies_url')
+            self.store(self.__links_movie, NAME_FILE_LINKS_MOVIES)
 
         print(f"find_links executed successfully -> url: {self.url}.")
 
-    def store(self, datas, filename, *args):
-        self.storage.store(datas, filename)
+    def my_thread(self, link):
+        response = self.get(link)
+        self.__links_movie.extend(self.find_links(response.text))
 
     @staticmethod
     def find_links(html_doc):
@@ -89,84 +87,25 @@ class LinkCrawler(CrawlBase):
 
         return links_move
 
+    def store(self, datas, filename, *args):
+        self.storage.store(datas, filename)
+
 
 class DataCrawler(CrawlBase):
-    def __init__(self, search_collection="movies_url", store=False):
+    def __init__(self, search_collection=NAME_FILE_LINKS_MOVIES):
         super().__init__()
         self.__links = self.__load_links(search_collection)
         self.parse = AdvertisementPageParser()
-        self.store_bool = store
-        self.datas = list()
+        self._store_bool = None
+        self._datas = list()
 
-    def my_multi_processing(self, link):
-        response = self.get(link[0])
-        if response is not None:
-            self.datas.append(self.parse.parse(response.text, link))
-
-    def start(self, store=False):
-        self.store_bool = store
-
-        # for link in self.__links:
-        #     response = self.get(link)
-        #     print(response)
-        #     if response is not None:
-        #         my_data = self.parse.parse(response.text)
-        #         if self.store_bool:
-        #             print(f"name: {my_data.get('name')}")
-        #             self.store(
-        #                 datas=my_data,
-        #             )
-
-        # pool = Pool(4)
-        # with pool:
-        #     pool.map(self.my_multi_processing, self.__links)
-
-        if self.__links:
-            threads = []
-            for link in self.__links:
-                tr = Thread(target=self.my_multi_processing, args=(link,))
-                threads.append(tr)
-                tr.start()
-
-            for thread in threads:
-                thread.join()
-
-            if self.store_bool and self.datas:
-                response = self.store(datas=self.datas)
-                print(response)
-        else:
-            print("There are no links to search")
-
-    def store(self, datas, *args):
-        if STORAGE == "mongo":
-            return self.storage.store(datas, 'movies_information')
-        elif STORAGE == "file":
-            threads = []
-            for data in datas:
-                tr = Thread(
-                    target=self.storage.store,
-                    args=(data, data["name"].replace("/", ''))
-                )
-                threads.append(tr)
-                tr.start()
-
-            for tr in threads:
-                tr.join()
-
-            return "extract_page executed successfully."
-
-    @staticmethod
-    def __load_links(search_collection="movies_url"):
+    def __load_links(self, search_collection):
         links = []
 
         if STORAGE == "mongo":
             mongodb = MongoDatabase()
             collection = getattr(mongodb.database, search_collection)
-            for link in collection.find():
-                if not link["flag"]:
-                    collection.update_one({"link": link["link"]},
-                                          {"$set": {"flag": True}})
-                    links.append((link["link"], link["_id"]))
+            links = self.storage.load(collection)
         elif STORAGE == 'file':
             update_links = []
             with open(f"fixtures/{search_collection}.json", "r") as f:
@@ -181,3 +120,46 @@ class DataCrawler(CrawlBase):
         if links:
             return links
         return None
+
+    def start(self, store=False):
+        self._store_bool = store
+
+        if self.__links:
+            threads = []
+            for link in self.__links:
+                tr = Thread(target=self.__my_multi_processing, args=(link,))
+                threads.append(tr)
+                tr.start()
+
+            for thread in threads:
+                thread.join()
+
+            if self._store_bool and self._datas:
+                response = self.store(datas=self._datas)
+                print(response)
+        else:
+            print("There are no links to search")
+
+    def __my_multi_processing(self, link):
+        response = self.get(link[0])
+        if response is not None:
+            data = self.parse.parse(response.text, link)
+            self._datas.append(data)
+
+    def store(self, datas, *args):
+        if STORAGE == "mongo":
+            return self.storage.store(datas, NAME_FILE_INFORMATION_MOVIES)
+        elif STORAGE == "file":
+            threads = []
+            for data in datas:
+                tr = Thread(
+                    target=self.storage.store,
+                    args=(data, data["name"].replace("/", ''))
+                )
+                threads.append(tr)
+                tr.start()
+
+            for tr in threads:
+                tr.join()
+
+            return "extract_page executed successfully."

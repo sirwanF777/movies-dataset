@@ -8,7 +8,7 @@ class AdvertisementPageParser:
         self.soup = None
 
     @property
-    def download_links(self):
+    def _download_links(self):
         urls = None
         try:
             urls = self.soup.select_one(
@@ -30,7 +30,7 @@ class AdvertisementPageParser:
         return None
 
     @property
-    def description(self):
+    def _description(self):
         des = self.soup.select_one(
             "#page_content > div > div > div.row.mt-3 > div.col-lg.pl-lg-0 > article > "
             "div.movie > div.m-content > div.row > div.col-12.order-3 > div > p"
@@ -39,7 +39,7 @@ class AdvertisementPageParser:
             return des.text
 
     @property
-    def image_link(self):
+    def _image_link(self):
         img_link = self.soup.select_one(
             "#page_content > div > div > div.row.mt-3 > div.col-lg.pl-lg-0 > "
             "article > div.movie > div.m-content > div.row > div.m_poster.col"
@@ -49,7 +49,7 @@ class AdvertisementPageParser:
             return img_link.get('src')
 
     @property
-    def page_title(self):
+    def _page_title(self):
         name = self.soup.select_one(
             "#page_content > div > div > div.row.mt-3 > div.col-lg.pl-lg-0 > "
             "article > div.movie > div.m-title > h1 > a"
@@ -61,7 +61,7 @@ class AdvertisementPageParser:
         return 'sample'
 
     @property
-    def site(self):
+    def _site(self):
 
         text = self.soup.select_one(
             "#page_content > div > div > div.row.mt-3 > div.col-lg.pl-lg-0 > "
@@ -72,7 +72,7 @@ class AdvertisementPageParser:
             return text.text
 
     @property
-    def genres(self):
+    def _genres(self):
         gen = self.soup.select_one(
             "#page_content > div > div > div.row.mt-3 > div.col-lg.pl-lg-0 > "
             "article > div.movie > div.m-content > div.row > div.m_info.col-"
@@ -82,7 +82,7 @@ class AdvertisementPageParser:
             return gen.text
 
     @property
-    def movie_score_IMDB(self):
+    def _movie_score_IMDB(self):
         score = self.soup.select_one(
             "#page_content > div > div > div.row.mt-3 > div.col-lg.pl-lg-0 > "
             "article > div.movie > div.m-content > div.row > div.m_info.col-sm.pl-"
@@ -93,7 +93,7 @@ class AdvertisementPageParser:
             return score.text.split(" ")[0]
 
     @property
-    def movie_score_RT(self):
+    def _movie_score_RT(self):
         rt = self.soup.select_one(
             '#page_content > div > div > div.row.mt-3 > div.col-lg.pl-lg-0 > '
             'article > div.movie > div.m-content > div.row > div.m_info.col-'
@@ -103,7 +103,7 @@ class AdvertisementPageParser:
             return rt.text
 
     @property
-    def language(self):
+    def _language(self):
         lan = self.soup.select_one(
             "#page_content > div > div > div.row.mt-3 > div.col-lg.pl-lg-0 > "
             "article > div.movie > div.m-content > div.row > div.m_info.col-"
@@ -113,7 +113,7 @@ class AdvertisementPageParser:
             return lan.text
 
     @property
-    def stars(self):
+    def _stars(self):
         star = self.soup.select_one(
             "#page_content > div > div > div.row.mt-3 > div.col-lg.pl-lg-0 > "
             "article > div.movie > div.m-content > div.row > div.m_info.col-"
@@ -123,7 +123,7 @@ class AdvertisementPageParser:
             return star.text
 
     @property
-    def director(self):
+    def _director(self):
         d = self.soup.select_one(
             "#page_content > div > div > div.row.mt-3 > div.col-lg.pl-lg-0 > "
             "article > div.movie > div.m-content > div.row > div.m_info.col-"
@@ -135,12 +135,12 @@ class AdvertisementPageParser:
     def parse(self, html_data, link):
         self.soup = BeautifulSoup(html_data, "html.parser")
         data_dict = {
-            "_id": link[1], "movie_information_link": link[0],
-            "name": self.page_title, 'img_links': self.image_link,
-            "description": self.description, 'download_links': self.download_links,
-            "site": self.site, "genres": self.genres, 'IMDB': self.movie_score_IMDB,
-            "RT": self.movie_score_RT, 'language': self.language, "stars": self.stars,
-            "director": self.director,
+            "_id": link[1], "link": link[0],
+            "name": self._page_title, 'img_links': self._image_link,
+            "description": self._description, 'download_links': self._download_links,
+            "site": self._site, "genres": self._genres, 'IMDB': self._movie_score_IMDB,
+            "RT": self._movie_score_RT, 'language': self._language, "stars": self._stars,
+            "director": self._director,
         }
 
         return data_dict

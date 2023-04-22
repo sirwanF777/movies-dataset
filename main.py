@@ -5,7 +5,7 @@ from threading import Thread
 
 import requests
 
-from config import OBJECT_CLASS
+from config import OBJECT_CLASS, NAME_FILE_LINKS_MOVIES
 from crawl import LinkCrawler, DataCrawler
 
 
@@ -65,7 +65,7 @@ if __name__ == "__main__":
             print("Internet is not connected.")
     elif switch == "extract_page":
         if check_internet_connection():
-            data = DataCrawler(search_collection="movies_url")
+            data = DataCrawler()
             data.start(store=True)
         else:
             print("Internet is not connected.")

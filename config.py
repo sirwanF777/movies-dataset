@@ -4,3 +4,6 @@ OBJECT_CLASS = {
 }
 
 STORAGE = 'mongo'  # choices: ['mongo', 'file']
+
+NAME_FILE_LINKS_MOVIES = "movies_url"
+NAME_FILE_INFORMATION_MOVIES = "movies_information"
