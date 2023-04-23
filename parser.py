@@ -132,10 +132,10 @@ class AdvertisementPageParser:
         if d:
             return d.text
 
-    def parse(self, html_data, link):
+    def parse(self, html_data, data):
         self.soup = BeautifulSoup(html_data, "html.parser")
         data_dict = {
-            "_id": link[1], "link": link[0],
+            "_id": data["_id"], "link": data["link"],
             "name": self._page_title, 'img_links': self._image_link,
             "description": self._description, 'download_links': self._download_links,
             "site": self._site, "genres": self._genres, 'IMDB': self._movie_score_IMDB,

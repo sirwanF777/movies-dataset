@@ -1,12 +1,8 @@
 import json
-import pprint
 import requests
-from numpy.distutils.command.config import config
-from pymongo import MongoClient
 from config import STORAGE, NAME_FILE_LINKS_MOVIES, NAME_FILE_INFORMATION_MOVIES
 from mongo import MongoDatabase
 from storage import FileStore, MongoStore
-from multiprocessing import Pool
 from threading import Thread
 from abc import ABC, abstractmethod
 from bs4 import BeautifulSoup
@@ -87,52 +83,48 @@ class LinkCrawler(CrawlBase):
 
         return links_move
 
-    def store(self, datas, filename, *args):
-        self.storage.store(datas, filename)
+    def store(self, datas, file_name, *args):
+        if isinstance(self.storage, FileStore):
+            self.storage.create_id(datas)
+        new_datas = self.update_links(datas)
+        self.storage.store(new_datas, file_name)
+
+    def update_links(self, datas):
+        all_links = list()
+        for link in self.storage.load(NAME_FILE_LINKS_MOVIES):
+            all_links.append(link["link"])
+
+        new_datas = [data for data in datas if data["link"] not in all_links]
+
+        return new_datas
 
 
 class DataCrawler(CrawlBase):
     def __init__(self, search_collection=NAME_FILE_LINKS_MOVIES):
         super().__init__()
-        self.__links = self.__load_links(search_collection)
+        self.__datas = self.__load_links(search_collection)
         self.parse = AdvertisementPageParser()
         self._store_bool = None
         self._datas = list()
 
     def __load_links(self, search_collection):
-        links = []
-
-        if STORAGE == "mongo":
-            mongodb = MongoDatabase()
-            collection = getattr(mongodb.database, search_collection)
-            links = self.storage.load(collection)
-        elif STORAGE == 'file':
-            update_links = []
-            with open(f"fixtures/{search_collection}.json", "r") as f:
-                links = json.loads(f.read())
-                for link in links:
-                    if not link["flag"]:
-                        link['flag'] = True
-                        update_links.append((link["link"], 1))
-            with open(f"fixtures/{search_collection}.json", "w") as f:
-                f.write(json.dumps(links))
-            links = update_links
-        if links:
-            return links
-        return None
+        all_data = self.storage.load(search_collection)
+        return [data for data in all_data if data["flag"] == False]
 
     def start(self, store=False):
         self._store_bool = store
 
-        if self.__links:
+        if self.__datas:
             threads = []
-            for link in self.__links:
-                tr = Thread(target=self.__my_multi_processing, args=(link,))
+            for data in self.__datas:
+                tr = Thread(target=self.__my_multi_processing, args=(data,))
                 threads.append(tr)
                 tr.start()
 
             for thread in threads:
                 thread.join()
+
+            self.storage.update_flag_datas(NAME_FILE_LINKS_MOVIES, self.__datas)
 
             if self._store_bool and self._datas:
                 response = self.store(datas=self._datas)
@@ -140,21 +132,22 @@ class DataCrawler(CrawlBase):
         else:
             print("There are no links to search")
 
-    def __my_multi_processing(self, link):
-        response = self.get(link[0])
+    def __my_multi_processing(self, data):
+        response = self.get(data["link"])
         if response is not None:
-            data = self.parse.parse(response.text, link)
+            # self.storage.update_flag_data(NAME_FILE_LINKS_MOVIES, data)
+            data = self.parse.parse(response.text, data)
             self._datas.append(data)
 
     def store(self, datas, *args):
-        if STORAGE == "mongo":
+        if datas and STORAGE == "mongo":
             return self.storage.store(datas, NAME_FILE_INFORMATION_MOVIES)
         elif STORAGE == "file":
             threads = []
             for data in datas:
                 tr = Thread(
                     target=self.storage.store,
-                    args=(data, data["name"].replace("/", ''))
+                    args=(data, data["_id"])
                 )
                 threads.append(tr)
                 tr.start()
