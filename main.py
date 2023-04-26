@@ -35,14 +35,6 @@ def start_find_links():
     for genre in OBJECT_CLASS.values():
         links.append([url.format(genre), number_pages])
 
-    # threads = []
-    # for link in links:
-    #     tr = Thread(target=my_pool, args=(link, ))
-    #     threads.append(tr)
-    #     tr.start()
-    # for tr in threads:
-    #     tr.join()
-
     pool = Pool(4)
     with pool:
         pool.map(my_pool, links)
@@ -57,6 +49,18 @@ def check_internet_connection():
 
 
 if __name__ == "__main__":
+    """
+    By running the program, we must give it input in the terminal, which is in 
+    the following two ways:
+    1: python mian.py find_links
+    2: python mian.py extract_page
+    
+    find_links searches for the link of each web page for the movie and
+    saves it according to the STORAGE in the config file or as a file or as
+    mongodb (NoSQL) in the server: localhost, port: 27017.
+    
+    
+    """
     switch = sys.argv[1]
     if switch == "find_links":
         if check_internet_connection():
