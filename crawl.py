@@ -1,7 +1,5 @@
-import json
 import requests
 from config import STORAGE, NAME_FILE_LINKS_MOVIES, NAME_FILE_INFORMATION_MOVIES
-from mongo import MongoDatabase
 from storage import FileStore, MongoStore
 from threading import Thread
 from abc import ABC, abstractmethod
@@ -48,6 +46,7 @@ class LinkCrawler(CrawlBase):
     def start(self, store=False):
         start_page = 1
         urls = list()
+
         for i in range(self.number_page):
             urls.append(self.url + str(start_page))
             start_page += 1
@@ -68,7 +67,8 @@ class LinkCrawler(CrawlBase):
 
     def my_thread(self, link):
         response = self.get(link)
-        self.__links_movie.extend(self.find_links(response.text))
+        links = self.find_links(response.text)
+        self.__links_movie.extend(links)
 
     @staticmethod
     def find_links(html_doc):
@@ -84,8 +84,8 @@ class LinkCrawler(CrawlBase):
         return links_move
 
     def store(self, datas, file_name, *args):
-        if isinstance(self.storage, FileStore):
-            self.storage.create_id(datas)
+        # # if isinstance(self.storage, FileStore):
+        # self.storage.create_post_id(datas)
         new_datas = self.update_links(datas)
         self.storage.store(new_datas, file_name)
 
@@ -108,8 +108,8 @@ class DataCrawler(CrawlBase):
         self._datas = list()
 
     def __load_links(self, search_collection):
-        all_data = self.storage.load(search_collection)
-        return [data for data in all_data if data["flag"] == False]
+        datas = self.storage.load(search_collection, filter_data={"flag": False})
+        return datas
 
     def start(self, store=False):
         self._store_bool = store
@@ -124,7 +124,7 @@ class DataCrawler(CrawlBase):
             for thread in threads:
                 thread.join()
 
-            self.storage.update_flag_datas(NAME_FILE_LINKS_MOVIES, self.__datas)
+            self.storage.update_flag(NAME_FILE_LINKS_MOVIES, self.__datas)
 
             if self._store_bool and self._datas:
                 response = self.store(datas=self._datas)
@@ -135,7 +135,6 @@ class DataCrawler(CrawlBase):
     def __my_multi_processing(self, data):
         response = self.get(data["link"])
         if response is not None:
-            # self.storage.update_flag_data(NAME_FILE_LINKS_MOVIES, data)
             data = self.parse.parse(response.text, data)
             self._datas.append(data)
 
@@ -156,3 +155,35 @@ class DataCrawler(CrawlBase):
                 tr.join()
 
             return "extract_page executed successfully."
+
+
+class ImageDownloader(CrawlBase):
+    def __init__(self, *args, **kwargs):
+        super().__init__()
+        self.all_datas = self.get_all_datas()
+
+    def get_all_datas(self):
+        datas = self.storage.load(NAME_FILE_INFORMATION_MOVIES)
+
+        return datas
+
+    def start(self, store=True):
+        for data in self.all_datas:
+            response = self.get(data['img_links'])
+            self.store(response, data['post_id'])
+
+    @staticmethod
+    def get(link):
+        try:
+            response = requests.get(link, stream=True)
+        except requests.HTTPError:
+            return None
+        if response.status_code == 200:
+            return response
+        return None
+
+    def store(self, response, filename):
+        with open(f"fixtures/images/{filename}.jpg", "ab") as f:
+            f.write(response.content)
+            for _ in response.iter_lines():
+                f.write(response.content)

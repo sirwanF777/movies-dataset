@@ -135,13 +135,17 @@ class AdvertisementPageParser:
     def parse(self, html_data, data):
         self.soup = BeautifulSoup(html_data, "html.parser")
         data_dict = {
-            "_id": data["_id"], "link": data["link"],
+            "link": data["link"], "post_id": data["link"].split("/")[3],
             "name": self._page_title, 'img_links': self._image_link,
             "description": self._description, 'download_links': self._download_links,
             "site": self._site, "genres": self._genres, 'IMDB': self._movie_score_IMDB,
             "RT": self._movie_score_RT, 'language': self._language, "stars": self._stars,
             "director": self._director,
         }
+        try:
+            data_dict["_id"] = data["_id"]
+        except KeyError:
+            data_dict["_id"] = data_dict["post_id"]
 
         return data_dict
 

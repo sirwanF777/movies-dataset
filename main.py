@@ -6,7 +6,7 @@ from threading import Thread
 import requests
 
 from config import OBJECT_CLASS, NAME_FILE_LINKS_MOVIES
-from crawl import LinkCrawler, DataCrawler
+from crawl import LinkCrawler, DataCrawler, ImageDownloader
 
 
 def my_pool(link):
@@ -70,6 +70,12 @@ if __name__ == "__main__":
     elif switch == "extract_page":
         if check_internet_connection():
             data = DataCrawler()
+            data.start(store=True)
+        else:
+            print("Internet is not connected.")
+    elif switch == "image_downloader":
+        if check_internet_connection():
+            data = ImageDownloader()
             data.start(store=True)
         else:
             print("Internet is not connected.")

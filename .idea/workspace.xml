@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ChangeListManager">
+    <list default="true" id="51ff2412-c404-4f87-a764-8a694f7c94fc" name="Changes" comment="">
+      <change beforePath="$PROJECT_DIR$/.idea/.gitignore" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/codeStyles/codeStyleConfig.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/.idea/inspectionProfiles/Project_Default.xml" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/config.py" beforeDir="false" afterPath="$PROJECT_DIR$/config.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/crawl.py" beforeDir="false" afterPath="$PROJECT_DIR$/crawl.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/1066.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/10909.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/1103.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/12561.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14010.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14014.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14040.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14043.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14068.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14094.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14106.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14108.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14111.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14120.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14126.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14127.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14128.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14130.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14131.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14133.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14134.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14135.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14139.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14140.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14141.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14142.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14143.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14145.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/14147.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/5883.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/754.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/adv/9197.json" beforeDir="false" />
+      <change beforePath="$PROJECT_DIR$/fixtures/movies_url.json" beforeDir="false" afterPath="$PROJECT_DIR$/fixtures/movies_url.json" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/main.py" beforeDir="false" afterPath="$PROJECT_DIR$/main.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/parser.py" beforeDir="false" afterPath="$PROJECT_DIR$/parser.py" afterDir="false" />
+      <change beforePath="$PROJECT_DIR$/storage.py" beforeDir="false" afterPath="$PROJECT_DIR$/storage.py" afterDir="false" />
+    </list>
+    <option name="SHOW_DIALOG" value="false" />
+    <option name="HIGHLIGHT_CONFLICTS" value="true" />
+    <option name="HIGHLIGHT_NON_ACTIVE_CHANGELIST" value="false" />
+    <option name="LAST_RESOLUTION" value="IGNORE" />
+  </component>
+  <component name="Git.Settings">
+    <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
+  </component>
+  <component name="MarkdownSettingsMigration">
+    <option name="stateVersion" value="1" />
+  </component>
+  <component name="ProjectId" id="2PE8cIKG05ypbKDWw5wQYoaq5Su" />
+  <component name="ProjectViewState">
+    <option name="hideEmptyMiddlePackages" value="true" />
+    <option name="showLibraryContents" value="true" />
+  </component>
+  <component name="PropertiesComponent"><![CDATA[{
+  "keyToString": {
+    "RunOnceActivity.OpenProjectViewOnStart": "true",
+    "RunOnceActivity.ShowReadmeOnStart": "true",
+    "last_opened_file_path": "E:/Projects/Pycharm/backend_1/src/main.py"
+  }
+}]]></component>
+  <component name="RunManager" selected="Python.extract page">
+    <configuration name="extract page" type="PythonConfigurationType" factoryName="Python">
+      <module name="src" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="E:\Projects\Pycharm\backend_1\back_end_venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="extract_page" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="find links" type="PythonConfigurationType" factoryName="Python">
+      <module name="src" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="E:\Projects\Pycharm\backend_1\back_end_venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="find_links" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <configuration name="image downloader" type="PythonConfigurationType" factoryName="Python">
+      <module name="src" />
+      <option name="INTERPRETER_OPTIONS" value="" />
+      <option name="PARENT_ENVS" value="true" />
+      <envs>
+        <env name="PYTHONUNBUFFERED" value="1" />
+      </envs>
+      <option name="SDK_HOME" value="E:\Projects\Pycharm\backend_1\back_end_venv\Scripts\python.exe" />
+      <option name="WORKING_DIRECTORY" value="$PROJECT_DIR$" />
+      <option name="IS_MODULE_SDK" value="false" />
+      <option name="ADD_CONTENT_ROOTS" value="true" />
+      <option name="ADD_SOURCE_ROOTS" value="true" />
+      <option name="SCRIPT_NAME" value="$PROJECT_DIR$/main.py" />
+      <option name="PARAMETERS" value="image_downloader" />
+      <option name="SHOW_COMMAND_LINE" value="false" />
+      <option name="EMULATE_TERMINAL" value="false" />
+      <option name="MODULE_MODE" value="false" />
+      <option name="REDIRECT_INPUT" value="false" />
+      <option name="INPUT_FILE" value="" />
+      <method v="2" />
+    </configuration>
+    <list>
+      <item itemvalue="Python.image downloader" />
+      <item itemvalue="Python.find links" />
+      <item itemvalue="Python.extract page" />
+    </list>
+  </component>
+  <component name="SpellCheckerSettings" RuntimeDictionaries="0" Folders="0" CustomDictionaries="0" DefaultDictionary="application-level" UseSingleDictionary="true" transferred="true" />
+  <component name="TaskManager">
+    <task active="true" id="Default" summary="Default task">
+      <changelist id="51ff2412-c404-4f87-a764-8a694f7c94fc" name="Changes" comment="" />
+      <created>1683010959131</created>
+      <option name="number" value="Default" />
+      <option name="presentableId" value="Default" />
+      <updated>1683010959131</updated>
+    </task>
+    <servers />
+  </component>
+  <component name="Vcs.Log.Tabs.Properties">
+    <option name="TAB_STATES">
+      <map>
+        <entry key="MAIN">
+          <value>
+            <State />
+          </value>
+        </entry>
+      </map>
+    </option>
+  </component>
+</project>
