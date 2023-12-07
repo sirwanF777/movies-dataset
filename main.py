@@ -18,7 +18,7 @@ def my_pool(link):
 def start_find_links():
     url = "https://www.f2m.top/category/{}/page/"
     links = []
-    number_pages = None
+    number_pages = 10
 
     while True:
         try:
@@ -35,7 +35,7 @@ def start_find_links():
     for genre in OBJECT_CLASS.values():
         links.append([url.format(genre), number_pages])
 
-    pool = Pool(4)
+    pool = Pool(2)
     with pool:
         pool.map(my_pool, links)
 

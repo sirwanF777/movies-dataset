@@ -1,3 +1,5 @@
+import shutil
+
 import requests
 from config import STORAGE, NAME_FILE_LINKS_MOVIES, NAME_FILE_INFORMATION_MOVIES
 from storage import FileStore, MongoStore
@@ -168,9 +170,21 @@ class ImageDownloader(CrawlBase):
         return datas
 
     def start(self, store=True):
+        threads = []
         for data in self.all_datas:
-            response = self.get(data['img_links'])
-            self.store(response, data['post_id'])
+            tr = Thread(target=self.my_thread, args=(data,))
+            tr.start()
+            threads.append(tr)
+
+        for tr in threads:
+            tr.join()
+
+        print("end")
+
+    def my_thread(self, data):
+        response = self.get(data['img_links'])
+        self.store(response, data['post_id'])
+        print(f"name: {data['post_id']}")
 
     @staticmethod
     def get(link):
@@ -183,7 +197,8 @@ class ImageDownloader(CrawlBase):
         return None
 
     def store(self, response, filename):
-        with open(f"fixtures/images/{filename}.jpg", "ab") as f:
-            f.write(response.content)
-            for _ in response.iter_lines():
-                f.write(response.content)
+        with open(f"fixtures/images/{filename}.jpg", "wb") as f:
+            shutil.copyfileobj(response.raw, f)
+            # f.write(response.content)
+            # for _ in response.iter_lines():
+            #     f.write(response.content)
